@@ -1,25 +1,10 @@
 #!/usr/bin/env python
 #coding=utf-8
-#对音频信号处理程序
-#张泽旺，2015-12-12
-# 本程序主要有四个函数，它们分别是：
-#    audio2frame:将音频转换成帧矩阵
-#    deframesignal:对每一帧做一个消除关联的变换
-#    spectrum_magnitude:计算每一帧傅立叶变换以后的幅度
-#    spectrum_power:计算每一帧傅立叶变换以后的功率谱
-#    log_spectrum_power:计算每一帧傅立叶变换以后的对数功率谱
-#    pre_emphasis:对原始信号进行预加重处理
 import numpy
 import math
 
 def audio2frame(signal,frame_length,frame_step,winfunc=lambda x:numpy.ones((x,))):
-    '''将音频信号转化为帧。
-	参数含义：
-	signal:原始音频型号
-	frame_length:每一帧的长度(这里指采样点的长度，即采样频率乘以时间间隔)
-	frame_step:相邻帧的间隔（同上定义）
-	winfunc:lambda函数，用于生成一个向量
-    '''
+    
     signal_length=len(signal) #信号总长度
     frame_length=int(round(frame_length)) #以帧帧时间长度
     frame_step=int(round(frame_step)) #相邻帧之间的步长
@@ -37,15 +22,7 @@ def audio2frame(signal,frame_length,frame_step,winfunc=lambda x:numpy.ones((x,))
     return frames*win   #返回帧信号矩阵
 
 def deframesignal(frames,signal_length,frame_length,frame_step,winfunc=lambda x:numpy.ones((x,))):
-    '''定义函数对原信号的每一帧进行变换，应该是为了消除关联性
-    参数定义：
-    frames:audio2frame函数返回的帧矩阵
-    signal_length:信号长度
-    frame_length:帧长度
-    frame_step:帧间隔
-    winfunc:对每一帧加window函数进行分析，默认此处不加window
-    '''
-    #对参数进行取整操作
+    
     signal_length=round(signal_length) #信号的长度
     frame_length=round(frame_length) #帧的长度
     frames_num=numpy.shape(frames)[0] #帧的总数
@@ -74,11 +51,6 @@ def spectrum_magnitude(frames,NFFT):
     return numpy.absolute(complex_spectrum)  #返回频谱的幅度值
     
 def spectrum_power(frames,NFFT):
-    '''计算每一帧傅立叶变换以后的功率谱
-    参数说明：
-    frames:audio2frame函数计算出来的帧矩阵
-    NFFT:FFT的大小
-    '''
     return 1.0/NFFT * numpy.square(spectrum_magnitude(frames,NFFT)) #功率谱等于每一点的幅度平方/NFFT
 
 def log_spectrum_power(frames,NFFT,norm=1):
